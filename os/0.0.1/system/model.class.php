@@ -1,0 +1,28 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: deakzsolt
+ * Date: 2017. 08. 20.
+ * Time: 14:20
+ */
+
+class Model extends Database {
+
+	/**
+	 * Stores Model class
+	 *
+	 * @var string
+	 */
+	protected $_model;
+
+	function __construct() {
+		if (defined('DB_HOST')) {
+//			$this->connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME);
+//			$this->_model = get_class($this);
+//			$this->_table = strtolower($this->_model);
+		} // if
+	}
+
+	function __destruct() {
+	}
+}
