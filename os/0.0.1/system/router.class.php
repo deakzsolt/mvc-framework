@@ -69,6 +69,10 @@ class Router {
 			$_action = $get_url[1];
 		} // if
 
+		if (!is_file(ROOT.'/config/config.php')) {
+			$_module = 'install';
+		} // if
+
 		$this->module = $_module;
 		$this->action = $_action;
 
@@ -148,7 +152,6 @@ class Router {
 		self::unregisterGlobals();
 		self::module_includes();
 
-//		TODO double check this part will work properly in future
 		$dispatch = new $this->controller_class_name($this->module,$this->action,$this->model,$this->model_class_name,$this->controller);
 		$queryString = array($this->module.$this->action);
 
