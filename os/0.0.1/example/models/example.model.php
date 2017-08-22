@@ -8,4 +8,7 @@
 
 class ExampleModel extends Model {
 
+	function example_query() {
+		return $this->query("SELECT * FROM 4ch_users users");
+	} // example_query
 }

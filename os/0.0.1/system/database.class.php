@@ -6,59 +6,125 @@
  * Time: 13:35
  */
 
+defined('DB_CHARSET') or define('DB_CHARSET', 'utf8');
+
 /*
-* Mysql database class - only one connection alowed
+* Mysql database class - only one connection allowed
 */
 class Database {
 
 	/**
-	 * MySqli connection
+	 * Open link to the database
 	 *
-	 * @var mysqli
+	 * @var MySQLi
 	 */
-	private $_connection;
+	protected $link;
 
 
 	/**
-	 * Creates only single connection
+	 * Return the mysqli result
 	 *
-	 * @var
+	 * @var _result
 	 */
-	private static $_instance;
+	protected $_result;
+
 
 	/**
-	 * Get an instance of the Database
+	 * Connects to database
+	 **/
+	function connect($address, $account, $pwd, $name) {
+
+		$this->link = new MySQLi($address, $account, $pwd, $name);
+
+		if($this->link->connect_errno) {
+			throw new Exception('Failed to select database. Reason: ' . $this->link->connect_error);
+		} // if
+
+		$this->link->set_charset(DB_CHARSET);
+
+	} // function connect
+
+
+	/**
+	 * Escapes parameters before sending SQL query
 	 *
-	 * @return Database
+	 * @param $data
+	 * @return string
 	 */
-	public static function getInstance() {
-		// If no instance then make one
-		if(!self::$_instance) {
-			self::$_instance = new self();
-		} // if
-		return self::$_instance;
-	} // getInstance
+	public function sanitise($data) {
+		$data = $this->link->real_escape_string($data);
+		return $data;
+	} // sanitise
 
-	private function __construct() {
-		$this->_connection = new mysqli(DB_HOST, DB_USER,DB_PASSWORD, DB_NAME);
+	/**
+	 * Escapes parameters in array before sending SQL query
+	 *
+	 * @param $data
+	 * @return mixed
+	 */
+	public function sanitise_array($data) {
+		foreach($data as $key => $value) {
+			$data[$key] = $this->link->real_escape_string($value);
+		} // foreach
+		return $data;
+	} // sanitise_array
 
-		if(mysqli_connect_error()) {
-			trigger_error("Failed to connect to to MySQL: " . mysqli_connect_error(),
-				E_USER_ERROR);
+	/**
+	 * Custom SQL Query
+	 *
+	 **/
+	function query($query,$limit=0) {
+		$this->_result = $this->link->query($query);
+		self::disconnect();
+		return $this->_result;
+	} // function query
+
+	/**
+	 * Disconnects from database
+	 **/
+	function disconnect() {
+		if($this->link instanceof MySQLi) {
+			$this->link->close();
 		} // if
-	} // constructor
+	} // function disconnect
+
+	/**
+	 * @param $query
+	 *
+	 * @return bool
+	 * @throws Exception
+	 */
+	function createTable($query) {
+		$this->_result = mysqli_query($this->link,$query);
+		if ($this->_result) {
+			return true;
+		} else {
+			throw new Exception("MySQLi error $this->error <br> Query:<br> $query", $this->errno);
+		} // if
+	} // createTable
+
+
+	/**
+	 * Get number of rows
+	 *
+	 * @return int
+	 */
+//	function getNumRows() {
+//		return mysqli_num_rows($this->_result);
+//	}
+
+
+	/**
+	 * Free resources allocated by a query
+	 **/
+//	function freeResult() {
+//		mysqli_free_result($this->_result);
+//	}
+
 
 	/**
 	 * Magic method clone is empty to prevent duplication of connection
 	 */
-	private function __clone() { }
+//	private function __clone() { }
 
-	/**
-	 * Return MySqli connection
-	 *
-	 * @return mysqli
-	 */
-	public function getConnection() {
-		return $this->_connection;
-	} // getConnection
 }

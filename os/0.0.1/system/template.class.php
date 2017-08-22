@@ -47,42 +47,61 @@ class Template {
 	} // constructor
 
 	/**
-	 * Set php variables for view usage
+	 * Replaces php variables in header/view/footer
 	 *
-	 * @param $name
-	 * @param $value
+	 * @param $file
+	 * @param null $var
+	 * @return mixed|string
 	 */
-	function set($name,$value) {
-		$this->variables[$name] = $value;
-	} // set
+	function load_template($file,$var=null) {
+		$template_content = file_get_contents($file);
+		$match = '/\{([$a-zA-Z0-9_]+)\}/';
+
+		foreach($var as $variable => $content) {
+			$template_content = str_replace('{'.$variable.'}', $content, $template_content);
+		} // foreach
+
+		if ($var == null) {
+			if (preg_match($match, $template_content)) {
+				$template_content = preg_replace($match, '', $template_content);
+			} // if
+		} // if
+
+		return $template_content;
+	} // load_template
 
 	/**
-	 * Display Template
+	 * Include the template files and send trough the variables
 	 *
-	 **/
-	function render() {
+	 * @param $var
+	 */
+	function render($var) {
 
-		extract($this->variables);
 		define ('DS', DIRECTORY_SEPARATOR);
+		$data = '';
 
-//		TODO check is the controller needed here
-		if (file_exists(OS_PATH.DS.$this->_module.DS.'template'.DS.$this->_controller.DS.'header.php')) {
-			require_once (OS_PATH.DS.$this->_module.DS.'template'.DS.$this->_controller.DS.'header.php');
-		} else {
+		if (file_exists(OS_PATH.DS.$this->_module.DS.'template'.DS.'header.php')) {
 			require_once (OS_PATH.DS.$this->_module.DS.'template'.DS.'header.php');
+		} else {
+			$file = OS_PATH.DS.$this->_module.DS.'template'.DS.'header.html';
+			$data .= self::load_template($file,$var);
 		} // if
 
 		if (file_exists(OS_PATH.DS.$this->_module.DS.'template'.DS.$this->_action.'.php')){
 			require_once(OS_PATH.DS.$this->_module.DS.'template'.DS.$this->_action.'.php');
 		} else {
-			require_once (OS_PATH.DS.$this->_module.DS.'template'.DS.'view.php');
+			$file = OS_PATH.DS.$this->_module.DS.'template'.DS.'view.html';
+			$data .= self::load_template($file,$var);
 		} // if
 
-//		TODO check is the controller needed here
-		if (file_exists(OS_PATH.DS.$this->_module.DS.'template'.DS.$this->_controller.DS.'footer.php')) {
-			require_once (OS_PATH.DS.$this->_module.DS.'template'.DS.$this->_controller.DS.'footer.php');
-		} else {
+
+		if (file_exists(OS_PATH.DS.$this->_module.DS.'template'.DS.'footer.php')) {
 			require_once (OS_PATH.DS.$this->_module.DS.'template'.DS.'footer.php');
+		} else {
+			$file = OS_PATH.DS.$this->_module.DS.'template'.DS.'footer.html';
+			$data .= self::load_template($file,$var);
 		} // if
+
+		return $data;
 	} // render
 }
