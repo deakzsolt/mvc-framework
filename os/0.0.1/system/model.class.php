@@ -17,9 +17,8 @@ class Model extends Database {
 
 	function __construct() {
 		if (defined('DB_HOST')) {
-//			$this->connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME);
-//			$this->_model = get_class($this);
-//			$this->_table = strtolower($this->_model);
+			$db = Database::getInstance();
+			$mysqli = $db->getConnection();
 		} // if
 	}
 
