@@ -46,6 +46,8 @@ class Controller {
 	 */
 	protected $_template;
 
+	protected $variables = array();
+
 
 	function __construct($module, $action, $model, $model_class_name, $controller) {
 
@@ -59,19 +61,21 @@ class Controller {
 	} // constructor
 
 	/**
-	 * Setup php variables what can be used in the view
+	 * Setup php variables what can be used in the header/view/footer
 	 *
 	 * @param $name
 	 * @param $value
 	 */
 	function set($name,$value) {
-		$this->_template->set($name,$value);
+		$this->variables[$name] = $value;
 	} // set
 
 	/**
-	 * TODO read abut the destructor
+	 * Show the collected data as render
+	 *
+	 * transfer the variables to the render function
 	 */
 	function __destruct() {
-		$this->_template->render();
-	}
+		echo $this->_template->render($this->variables);
+	} // destructor
 }

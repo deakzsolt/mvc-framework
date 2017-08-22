@@ -15,13 +15,18 @@ class Model extends Database {
 	 */
 	protected $_model;
 
+	/**
+	 * Store Users Session key
+	 *
+	 * @var
+	 */
+	protected $_session_key;
+
 	function __construct() {
 		if (defined('DB_HOST')) {
-			$db = Database::getInstance();
-			$mysqli = $db->getConnection();
+			$this->connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME);
 		} // if
 	}
 
-	function __destruct() {
-	}
+	function __destruct() { }
 }
