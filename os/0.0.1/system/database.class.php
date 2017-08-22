@@ -10,40 +10,54 @@
 * Mysql database class - only one connection alowed
 */
 class Database {
+
+	/**
+	 * MySqli connection
+	 *
+	 * @var mysqli
+	 */
 	private $_connection;
-	private static $_instance; //The single instance
-	private $_host = "HOSTt";
-	private $_username = "USERNAME";
-	private $_password = "PASSWORd";
-	private $_database = "DATABASE";
 
-	/*
-	Get an instance of the Database
-	@return Instance
-	*/
+
+	/**
+	 * Creates only single connection
+	 *
+	 * @var
+	 */
+	private static $_instance;
+
+	/**
+	 * Get an instance of the Database
+	 *
+	 * @return Database
+	 */
 	public static function getInstance() {
-		if(!self::$_instance) { // If no instance then make one
+		// If no instance then make one
+		if(!self::$_instance) {
 			self::$_instance = new self();
-		}
+		} // if
 		return self::$_instance;
-	}
+	} // getInstance
 
-	// Constructor
 	private function __construct() {
-		$this->_connection = new mysqli($this->_host, $this->_username,
-			$this->_password, $this->_database);
+		$this->_connection = new mysqli(DB_HOST, DB_USER,DB_PASSWORD, DB_NAME);
 
-		// Error handling
 		if(mysqli_connect_error()) {
 			trigger_error("Failed to connect to to MySQL: " . mysqli_connect_error(),
 				E_USER_ERROR);
-		}
-	}
+		} // if
+	} // constructor
 
-	// Magic method clone is empty to prevent duplication of connection
+	/**
+	 * Magic method clone is empty to prevent duplication of connection
+	 */
 	private function __clone() { }
 
-	// Get mysqli connection
+	/**
+	 * Return MySqli connection
+	 *
+	 * @return mysqli
+	 */
 	public function getConnection() {
 		return $this->_connection;
 	} // getConnection
