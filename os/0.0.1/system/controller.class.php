@@ -53,6 +53,7 @@ class Controller {
 
 		$this->_controller = $controller;
 		$this->_action = $action;
+		$this->_module = $module;
 		$this->_model = $model;
 
 		$this->$model = new $model_class_name;
