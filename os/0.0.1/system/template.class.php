@@ -74,6 +74,8 @@ class Template {
 	 * Include the template files and send trough the variables
 	 *
 	 * @param $var
+	 *
+	 * @return string
 	 */
 	function render($var) {
 

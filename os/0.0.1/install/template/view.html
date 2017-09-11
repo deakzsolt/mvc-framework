@@ -1,10 +1,10 @@
 {error_report}
-<form>
-    <input type="text" name="db_host" placeholder="Database Host" />
-    <input type="text" name="db_name" placeholder="Database Name" />
-    <input type="text" name="db_user" placeholder="Database User" />
-    <input type="password" name="db_pass" placeholder="Database Password" />
-    <input type="text" name="admin" placeholder="Insert valid email" />
-    <input type="password" name="admin_password" placeholder="Password" />
-    <input type="submit" name="save" value="Save" />
+<form id="installation" method="post">
+    <label>Host:</label><input type="text" name="db_host" placeholder="Database Host" />
+    <label>Database Name:</label><input type="text" name="db_name" placeholder="Database Name" />
+    <label>Database User:</label><input type="text" name="db_user" placeholder="Database User" />
+    <label>Database Password</label><input type="password" name="db_pass" placeholder="Database Password" />
+    <label>Admin Email:</label><input type="text" name="admin" placeholder="Insert valid email" />
+    <label>Password:</label><input type="password" name="admin_password" placeholder="Password" />
+    <input type="submit" name="install" value="Install" />
 </form>

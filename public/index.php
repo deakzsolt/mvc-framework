@@ -17,7 +17,9 @@ if (is_file(ROOT.'/config/config.php')) {
 
 
 } else {
-	die('<p>WARNING: Application is missing the config.php file!</p><p>In future I might ad in autodeploy for the config file!</p>');
-//	require_once (ROOT.'/config/install_config.php');
-//	require_once (ROOT.'/os/'.APPLICATION_VERSION.'/system/bootstrap.php');
+
+	require_once (ROOT.'/config/default_config.php');
+
+	define ('OS_PATH', ROOT.'/os/'.APPLICATION_VERSION);
+	require_once (ROOT.'/os/'.APPLICATION_VERSION.'/system/init.php');
 } // if
